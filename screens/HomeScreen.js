@@ -2,21 +2,21 @@ import React, { useState, useEffect, useContext } from "react";
 import {
   Text,
   View,
-  Image,
   StyleSheet,
   SafeAreaView,
   Linking,
   TouchableOpacity,
 } from "react-native";
 import { Camera } from "expo-camera";
+import * as MediaLibrary from "expo-media-library";
+import ImageOverlay from "react-native-image-overlay";
+import ImageContext from "../context/ImageContext";
 import { Entypo } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { MaterialIcons } from "@expo/vector-icons";
-import ImageOverlay from "react-native-image-overlay";
-import * as MediaLibrary from "expo-media-library";
-import ImageContext from "../context/ImageContext";
 
 export default function HomeScreen({ navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
@@ -89,7 +89,7 @@ export default function HomeScreen({ navigation }) {
     return <Text>No access to files</Text>;
   }
 
-  // if image exist -> it will display this upon rerender
+  // If image exist -> it will display this upon rerender
   if (image) {
     return (
       <SafeAreaView style={styles.homepage}>
@@ -124,103 +124,96 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.homepage}>
-      <Text style={styles.homepageHeader}>Camera</Text>
       <View style={styles.cameraBox}>
-        {/* <RNCamera style={styles.rnCamera} /> */}
         <Camera
           ref={(ref) => setCamera(ref)}
           style={styles.camera}
           type={type}
           ratio={"1:1"}
         >
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                setType(
-                  type === Camera.Constants.Type.back
-                    ? Camera.Constants.Type.front
-                    : Camera.Constants.Type.back
-                );
-              }}
-            >
-              <MaterialCommunityIcons
-                name="camera-flip"
-                size={40}
-                color="white"
-                style={{ right: "100%", bottom: "5%" }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => takePicture()}>
-              <Entypo
-                name="controller-record"
-                size={100}
-                color="white"
-                style={{
-                  right: "20%",
+          <View style={styles.buttonsContainer}>
+            <View style={styles.topRowButtonBox}>
+              <TouchableOpacity
+                style={styles.infoAlbumButton}
+                onPress={() => navigation.navigate("intro")}
+              >
+                <FontAwesome
+                  name="question-circle-o"
+                  color="#853442"
+                  size={20}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.infoICAButton}
+                onPress={() => {
+                  Linking.openURL("https://www.ica.gov.sg/photo-guidelines");
                 }}
-              />
-            </TouchableOpacity>
+              >
+                <FontAwesome5 name="id-card" color="#853442" size={20} />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.infoAlbumButton}
+                onPress={() => navigation.navigate("album")}
+              >
+                <FontAwesome name="photo" color="#853442" size={20} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.cameraButtonsBox}>
+              <TouchableOpacity
+                style={styles.timerAndFlipButton}
+                onPress={() => {
+                  setType(
+                    type === Camera.Constants.Type.back
+                      ? Camera.Constants.Type.front
+                      : Camera.Constants.Type.back
+                  );
+                }}
+              >
+                <Ionicons name="timer-outline" size={28} color="#A6A4A5" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.cameraButton}
+                onPress={() => takePicture()}
+              >
+                <MaterialCommunityIcons
+                  name="circle-slice-8"
+                  size={65}
+                  color="#853442"
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.timerAndFlipButton}
+                onPress={() => {
+                  setType(
+                    type === Camera.Constants.Type.back
+                      ? Camera.Constants.Type.front
+                      : Camera.Constants.Type.back
+                  );
+                }}
+              >
+                <Ionicons
+                  name="camera-reverse-outline"
+                  size={28}
+                  color="#A6A4A5"
+                />
+              </TouchableOpacity>
+            </View>
           </View>
-          {/* {image ? (
-            <Image source={{ uri: image }} style={{ aspectRatio: 1 }} />
-          ) : null} */}
         </Camera>
-      </View>
-
-      <View style={styles.buttons}>
-        <TouchableOpacity
-          style={styles.infoButton}
-          onPress={() => navigation.navigate("intro")}
-        >
-          <FontAwesome5
-            style={styles.icon}
-            name="question-circle"
-            color="#853442"
-            size={20}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.middleSpace}></TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.infoICAButton}
-          onPress={() => {
-            Linking.openURL("https://www.ica.gov.sg/photo-guidelines");
-          }}
-        >
-          <FontAwesome
-            style={styles.icon}
-            name="id-card-o"
-            color="#853442"
-            size={20}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.middleSpace}></TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.infoButton}
-          onPress={() => navigation.navigate("album")}
-        >
-          <FontAwesome
-            style={styles.icon}
-            name="photo"
-            color="#853442"
-            size={20}
-          />
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
   cameraBox: {
-    height: "80%",
-    // width: "90%",
+    height: "90%",
     alignSelf: "center",
     backgroundColor: "black",
-    borderRadius: 10,
   },
 
   homepage: {
@@ -230,42 +223,33 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
 
-  buttons: {
+  camera: {
+    flex: 1,
+    aspectRatio: 1,
+  },
+
+  // Container for Row 1 and 2 Buttons
+
+  buttonsContainer: {
+    height: "100%",
+    backgroundColor: "transparent",
+    flexDirection: "column",
+    width: "70%",
+    justifyContent: "flex-end",
+    alignSelf: "center",
+  },
+
+  // Row 1 Buttons
+
+  topRowButtonBox: {
     flexDirection: "row",
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
+    width: "70%",
+    alignSelf: "center",
     height: 50,
+    justifyContent: "space-between",
   },
 
-  homepageHeader: {
-    width: "100%",
-    fontWeight: "bold",
-    textAlign: "center",
-    fontSize: 20,
-    color: "white",
-  },
-
-  //   text: {
-  //     flex: 0.3,
-  //     top: 25,
-  //     height: 100,
-  //     width: "100%",
-  //     paddingLeft: 18,
-  //     paddingRight: 15,
-  //     fontSize: 20,
-  //     textAlign: "left",
-  //   },
-
-  infoButton: {
-    top: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 15,
-    borderRadius: 10,
-    backgroundColor: "white",
-  },
-
-  infoICAButton: {
+  infoAlbumButton: {
     top: 10,
     paddingHorizontal: 30,
     paddingVertical: 15,
@@ -273,44 +257,35 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
   },
 
-  middleSpace: {
-    width: "5%",
+  infoICAButton: {
+    top: 10,
+    paddingHorizontal: 50,
+    paddingVertical: 15,
+    borderRadius: 10,
+    backgroundColor: "white",
   },
 
-  navButton: {
-    height: 40,
-    width: "100%",
-    color: "#853442",
-    textAlign: "center",
-  },
+  // Row 2 Buttons
 
-  buttonText: {
-    color: "#853442",
-    fontSize: 20,
-    textAlign: "center",
-  },
-
-  rnCamera: {
-    width: "94%",
-    alignSelf: "center",
-  },
-
-  //   container: {
-  //     flex: 1,
-  //   },
-  camera: {
-    flex: 1,
-    aspectRatio: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    backgroundColor: "transparent",
+  cameraButtonsBox: {
+    width: "70%",
+    height: "11%",
+    backgroundColor: "white",
     flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "flex-end",
+    justifyContent: "space-evenly",
+    alignSelf: "center",
+    borderRadius: 10,
+    marginTop: 20,
+    marginBottom: 10,
   },
-  //   text: {
-  //     fontSize: 18,
-  //     color: "white",
-  //   },
+
+  timerAndFlipButton: {
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
+
+  cameraButton: {
+    alignItems: "center",
+    justifyContent: "space-around",
+  },
 });
