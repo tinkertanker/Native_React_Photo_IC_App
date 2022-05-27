@@ -1,3 +1,6 @@
+// WORK ON:
+// TIMER AND ALBUM INTERFACE
+
 import React, { useState, useEffect, useContext } from "react";
 import {
   Text,
@@ -212,6 +215,8 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   cameraBox: {
     height: "90%",
+    width: "100%",
+    flex: 1,
     alignSelf: "center",
     backgroundColor: "black",
   },
@@ -225,7 +230,7 @@ const styles = StyleSheet.create({
 
   camera: {
     flex: 1,
-    aspectRatio: 1,
+    //aspectRatio: 1,
   },
 
   // Container for Row 1 and 2 Buttons
@@ -246,7 +251,8 @@ const styles = StyleSheet.create({
     width: "70%",
     alignSelf: "center",
     height: 50,
-    justifyContent: "space-between",
+    justifyContent: "center",
+    // flex: 1,
   },
 
   infoAlbumButton: {
@@ -255,6 +261,7 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderRadius: 10,
     backgroundColor: "white",
+    marginHorizontal: 15,
   },
 
   infoICAButton: {
@@ -268,14 +275,14 @@ const styles = StyleSheet.create({
   // Row 2 Buttons
 
   cameraButtonsBox: {
-    width: "70%",
+    width: "90%",
     height: "11%",
     backgroundColor: "white",
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignSelf: "center",
-    borderRadius: 10,
-    marginTop: 20,
+    borderRadius: 50,
+    marginTop: 28,
     marginBottom: 10,
   },
 
